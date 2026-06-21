@@ -1592,7 +1592,11 @@ GPT: Provides detailed review with specific feedback on structure, clarity, and 
       <div class="dots" id="dots"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
-      <button id="fsBtn" onclick="toggleFullscreen()" title="Celá obrazovka (F)" style="font-size:1.2rem; padding:6px 10px; line-height:1;">⛶</button>
+      <button id="fsBtn" onclick="toggleFullscreen()" title="Celá obrazovka (F)" style="padding:6px 10px; line-height:1; display:flex; align-items:center;">
+        <svg id="fsIcon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1 1h5v1.5H2.5V6H1V1zm9 0h5v5h-1.5V2.5H10V1zM1 10h1.5v3.5H6V15H1v-5zm9 3.5H13.5V10H15v5h-5v-1.5z"/>
+        </svg>
+      </button>
       <button id="next" onclick="changeSlide(1)">Další &#8594;</button>
     </div>
   </div>
@@ -1639,15 +1643,15 @@ document.addEventListener('keydown', e => {
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
-    document.getElementById('fsBtn').textContent = '⤡';
+    document.getElementById('fsIcon').innerHTML = '<path d="M6 1H1v5h1.5V2.5H6V1zm4 0v1.5h3.5V6H15V1h-5zM1 10v5h5v-1.5H2.5V10H1zm12.5 3.5H10V15h5v-5h-1.5v3.5z"/>';
   } else {
     document.exitFullscreen();
-    document.getElementById('fsBtn').textContent = '⛶';
+    document.getElementById('fsIcon').innerHTML = '<path d="M1 1h5v1.5H2.5V6H1V1zm9 0h5v5h-1.5V2.5H10V1zM1 10h1.5v3.5H6V15H1v-5zm9 3.5H13.5V10H15v5h-5v-1.5z"/>';
   }
 }
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) {
-    document.getElementById('fsBtn').textContent = '⛶';
+    document.getElementById('fsIcon').innerHTML = '<path d="M1 1h5v1.5H2.5V6H1V1zm9 0h5v5h-1.5V2.5H10V1zM1 10h1.5v3.5H6V15H1v-5zm9 3.5H13.5V10H15v5h-5v-1.5z"/>';
   }
 });
 
