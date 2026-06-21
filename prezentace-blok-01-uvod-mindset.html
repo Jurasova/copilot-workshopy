@@ -1591,7 +1591,10 @@ GPT: Provides detailed review with specific feedback on structure, clarity, and 
       <span class="counter" id="counter">1 / 42</span>
       <div class="dots" id="dots"></div>
     </div>
-    <button id="next" onclick="changeSlide(1)">Další &#8594;</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button id="fsBtn" onclick="toggleFullscreen()" title="Celá obrazovka (F)">⛶ Celá obrazovka</button>
+      <button id="next" onclick="changeSlide(1)">Další &#8594;</button>
+    </div>
   </div>
 
 </div><!-- /.deck -->
@@ -1629,9 +1632,22 @@ function changeSlide(dir) {
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
   if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
-  if (e.key === 'f' || e.key === 'F') {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+});
+
+// ── Fullscreen ──
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+    document.getElementById('fsBtn').textContent = '✕ Konec fullscreen';
+  } else {
+    document.exitFullscreen();
+    document.getElementById('fsBtn').textContent = '⛶ Celá obrazovka';
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    document.getElementById('fsBtn').textContent = '⛶ Celá obrazovka';
   }
 });
 
