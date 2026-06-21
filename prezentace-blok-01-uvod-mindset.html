@@ -19,38 +19,48 @@
   --accent-light: #e6f4ed;
   --accent2: #2b6cb0;
   --accent2-light: #ebf4ff;
-  --slide-max: 960px;
+  --deck-w: 1280px;
+  --deck-h: 720px;
+  --nav-h: 56px;
+  --slide-h: calc(var(--deck-h) - var(--nav-h));
 }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #1a202c;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ── Deck wrapper ── */
-.deck {
+html, body {
   width: 100%;
-  max-width: var(--slide-max);
-  position: relative;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #1a202c;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Deck wrapper: fixed 1280×720, scaled by JS ── */
+.deck {
+  width: var(--deck-w);
+  height: var(--deck-h);
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  background: #1a202c;
 }
 
 /* ── Slide ── */
 .slide {
   display: none;
   background: var(--bg);
-  border-radius: 12px;
-  min-height: 560px;
-  padding: 56px 64px 48px;
-  position: relative;
+  border-radius: 0;
+  width: var(--deck-w);
+  height: var(--slide-h);
+  padding: 48px 72px 36px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
   animation: fadeSlide 0.3s ease forwards;
 }
-.slide.active { display: flex; flex-direction: column; justify-content: center; }
+.slide.active { display: flex; flex-direction: column; justify-content: flex-start; }
 
 @keyframes fadeSlide {
   from { opacity: 0; transform: translateY(8px); }
@@ -232,8 +242,14 @@ p  { font-size: 0.97rem; color: #4a5568; line-height: 1.65; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
-  padding: 0 4px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: var(--deck-w);
+  height: var(--nav-h);
+  padding: 0 24px;
+  background: #1a202c;
+  z-index: 10;
 }
 .nav button {
   background: #2d3748;
@@ -357,21 +373,29 @@ p  { font-size: 0.97rem; color: #4a5568; line-height: 1.65; }
 /* ── Print / PDF export ── */
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
-  body {
+  html, body {
     background: #fff;
-    height: auto;
+    width: auto; height: auto;
     overflow: visible;
-    display: block;
   }
-  .nav, #dots, .slide-footer { display: none !important; }
-  .deck { max-width: 100%; width: 100%; position: static; }
+  .nav { display: none !important; }
+  .slide-footer { display: none !important; }
+  .deck {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+  }
   .slide, .slide-divider {
     display: flex !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
     page-break-after: always;
     break-after: page;
     border-radius: 0;
-    min-height: 0;
-    padding: 20mm 24mm;
+    overflow: visible !important;
+    padding: 16mm 20mm;
     box-shadow: none;
     border: none;
   }
@@ -384,7 +408,6 @@ p  { font-size: 0.97rem; color: #4a5568; line-height: 1.65; }
   h2 { font-size: 1.2rem; }
   p, li, td, th { font-size: 0.8rem; }
   .deck > *:last-child { page-break-after: avoid !important; break-after: avoid !important; }
-  body > *:not(.deck) { display: none !important; }
 }
 
 /* ── Prompt accordion cards ── */
@@ -451,10 +474,14 @@ p  { font-size: 0.97rem; color: #4a5568; line-height: 1.65; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-radius: 12px;
-  min-height: 560px;
+  border-radius: 0;
+  width: var(--deck-w);
+  height: var(--slide-h);
   padding: 56px 64px 48px;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
   animation: fadeSlide 0.3s ease forwards;
 }
 .slide-divider.active { display: flex; }
@@ -1557,17 +1584,17 @@ GPT: Provides detailed review with specific feedback on structure, clarity, and 
     <div class="slide-footer">36 / 42</div>
   </div>
 
-</div><!-- /.deck -->
-
-<!-- Navigation -->
-<div class="nav" style="width:100%; max-width:960px;">
-  <button id="prev" onclick="changeSlide(-1)" disabled>&#8592; Zpět</button>
-  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
-    <span class="counter" id="counter">1 / 42</span>
-    <div class="dots" id="dots"></div>
+  <!-- Navigation (inside deck, scales with content) -->
+  <div class="nav">
+    <button id="prev" onclick="changeSlide(-1)" disabled>&#8592; Zpět</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+      <span class="counter" id="counter">1 / 42</span>
+      <div class="dots" id="dots"></div>
+    </div>
+    <button id="next" onclick="changeSlide(1)">Další &#8594;</button>
   </div>
-  <button id="next" onclick="changeSlide(1)">Další &#8594;</button>
-</div>
+
+</div><!-- /.deck -->
 
 <script>
 const slides = document.querySelectorAll('.slide, .slide-divider');
@@ -1602,7 +1629,25 @@ function changeSlide(dir) {
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
   if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+  if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
 });
+
+// ── 16:9 scaling ──
+function scalePresentation() {
+  const deck = document.querySelector('.deck');
+  const W = 1280, H = 720;
+  const scaleX = window.innerWidth  / W;
+  const scaleY = window.innerHeight / H;
+  const scale  = Math.min(scaleX, scaleY);
+  const offX   = (window.innerWidth  - W * scale) / 2;
+  const offY   = (window.innerHeight - H * scale) / 2;
+  deck.style.transform = `translate(${offX}px, ${offY}px) scale(${scale})`;
+}
+window.addEventListener('resize', scalePresentation);
+scalePresentation();
 
 // ── Prompt accordion ──
 function toggleCard(header) {
