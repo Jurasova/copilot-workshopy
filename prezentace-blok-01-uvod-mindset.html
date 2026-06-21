@@ -1592,7 +1592,7 @@ GPT: Provides detailed review with specific feedback on structure, clarity, and 
       <div class="dots" id="dots"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
-      <button id="fsBtn" onclick="toggleFullscreen()" title="Celá obrazovka (F)">⛶ Celá obrazovka</button>
+      <button id="fsBtn" onclick="toggleFullscreen()" title="Celá obrazovka (F)" style="font-size:1.2rem; padding:6px 10px; line-height:1;">⛶</button>
       <button id="next" onclick="changeSlide(1)">Další &#8594;</button>
     </div>
   </div>
@@ -1639,15 +1639,15 @@ document.addEventListener('keydown', e => {
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
-    document.getElementById('fsBtn').textContent = '✕ Konec fullscreen';
+    document.getElementById('fsBtn').textContent = '⤡';
   } else {
     document.exitFullscreen();
-    document.getElementById('fsBtn').textContent = '⛶ Celá obrazovka';
+    document.getElementById('fsBtn').textContent = '⛶';
   }
 }
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) {
-    document.getElementById('fsBtn').textContent = '⛶ Celá obrazovka';
+    document.getElementById('fsBtn').textContent = '⛶';
   }
 });
 
